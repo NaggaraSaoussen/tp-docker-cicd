@@ -1,4 +1,4 @@
-name: CI - Test de Base  # Nom du workflow
+name: CI - Build Docker Images  # Nom du workflow
 
 on:
   push:
@@ -7,9 +7,28 @@ on:
     branches: [main]  # Déclenche sur une pull request vers la branche 'main'
 
 jobs:
-  hello:
+  build:
     runs-on: ubuntu-latest  # Environnement du runner
 
     steps:
-      - name: Afficher un message
-        run: echo "CI fonctionne !"  # Affiche le message dans le terminal
+      - name: Checkout code
+        uses: actions/checkout@v3  # Récupère le code source du dépôt
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2  # Configure Docker Buildx
+
+      - name: Build Backend Image
+        run: |
+          docker build -t tp-backend ./backend  # Construire l'image du backend
+
+      - name: Build Frontend Image
+        run: |
+          docker build -t tp-frontend ./frontend  # Construire l'image du frontend
+
+      - name: Build Database Image
+        run: |
+          docker build -t tp-db ./database  # Construire l'image de la base de données
+
+      - name: List Docker Images
+        run: |
+          docker images  # Afficher la liste des images Docker
