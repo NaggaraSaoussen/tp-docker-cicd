@@ -1,4 +1,4 @@
-name: CI - Build Docker Images  # Nom du workflow
+name: CI - Build & Test  # Nom du workflow
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]  # Déclenche sur une pull request vers la branche 'main'
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest  # Environnement du runner
 
     steps:
@@ -17,18 +17,50 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2  # Configure Docker Buildx
 
-      - name: Build Backend Image
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version  # Vérifie que Docker Compose est installé
+
+      - name: Build Docker Images
         run: |
           docker build -t tp-backend ./backend  # Construire l'image du backend
-
-      - name: Build Frontend Image
-        run: |
           docker build -t tp-frontend ./frontend  # Construire l'image du frontend
-
-      - name: Build Database Image
-        run: |
           docker build -t tp-db ./database  # Construire l'image de la base de données
 
-      - name: List Docker Images
+      - name: Start services
         run: |
-          docker images  # Afficher la liste des images Docker
+          docker-compose up -d  # Lancer les services définis dans docker-compose.yml
+
+      - name: Wait for backend
+        run: |
+          echo "Attente du backend (max 60s)..."
+          for i in {1..30}; do
+            if curl -f http://localhost:3000/api >/dev/null 2>&1; then
+              echo "Backend est prêt !"
+              break
+            fi
+            echo "En attente... ($i/30)"
+            sleep 2
+          done
+          if [ $i -eq 30 ]; then
+            echo "Timeout : backend non démarré"
+            exit 1
+          fi
+
+      - name: Test API Endpoint
+        run: |
+          echo "Test de /api"
+          curl -f http://localhost:3000/api  # Teste l'endpoint API
+
+      - name: Test DB Endpoint
+        run: |
+          echo "Test de /db"
+          curl -f http://localhost:3000/db  # Teste l'endpoint DB
+
+      - name: Show logs on failure
+        if: failure()  # Cette étape ne s'exécute que si l'une des étapes précédentes échoue
+        run: |
+          echo "Logs des conteneurs :"
+          docker-compose logs  # Affiche les logs des conteneurs Docker
