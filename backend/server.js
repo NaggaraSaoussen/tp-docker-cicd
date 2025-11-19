@@ -32,7 +32,7 @@ app.get("/api", (req, res) => {
   });
 });
 
-// ROUTE DATABASE : Récupérer les données de la base
+// ROUTE DATABASE : Récupérer les données 
 app.get("/db", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users");
