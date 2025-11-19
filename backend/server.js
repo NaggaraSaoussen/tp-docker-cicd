@@ -1,4 +1,4 @@
-const express = require("express");
+baseconst express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
 const app = express();
@@ -32,7 +32,9 @@ app.get("/api", (req, res) => {
   });
 });
 
+
 // ROUTE DATABASE : Récupérer les données delabase
+
 app.get("/db", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users");
