@@ -1,0 +1,9 @@
+FROM nginx:alpine
+
+# Copier les fichiers HTML et CSS dans le répertoire par défaut de Nginx
+COPY index.html /usr/share/nginx/html/
+COPY style.css /usr/share/nginx/html/
+
+# Exposer le port 80 pour accéder à Nginx
+EXPOSE 80
+
