@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Frontend Docker</title>
-  <link rel="stylesheet" href="style.css">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .container { max-width: 600px; margin: auto; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    .container { max-width: 700px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    button { padding: 10px 20px; margin-bottom: 20px; cursor: pointer; font-size: 16px; }
     pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
-    button { padding: 10px 20px; margin-bottom: 20px; cursor: pointer; }
+    h1, h3 { text-align: center; }
   </style>
 </head>
 <body>
@@ -17,8 +17,10 @@
     <h1>Docker Compose App</h1>
     <button onclick="fetchData()">Get Backend Data</button>
     <div id="result">Click the button to test backend...</div>
+    
     <h3>API Response:</h3>
     <pre id="api-response">Waiting for API...</pre>
+    
     <h3>Database Response:</h3>
     <pre id="db-response">Waiting for DB...</pre>
   </div>
