@@ -5,27 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Frontend Docker</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .container { max-width: 600px; margin: auto; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    button { padding: 10px 20px; margin-bottom: 20px; cursor: pointer; }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Docker Compose App</h1>
     <button onclick="fetchData()">Get Backend Data</button>
-    <div id="result">Click to test...</div>
-    <pre id="api-response"></pre>
-    <pre id="db-response"></pre>
+    <div id="result">Click the button to test backend...</div>
+    <h3>API Response:</h3>
+    <pre id="api-response">Waiting for API...</pre>
+    <h3>Database Response:</h3>
+    <pre id="db-response">Waiting for DB...</pre>
   </div>
 
   <script>
+    const BACKEND_URL = "https://backend1-qpkk.onrender.com"; // URL publique Render
+
     async function fetchData() {
       try {
-        // Fetch API data
-        const apiResponse = await fetch("http://localhost:10000/api")
+        // Fetch API endpoint
+        const apiResponse = await fetch(`${BACKEND_URL}/api`);
         if (!apiResponse.ok) throw new Error('API request failed');
         const apiData = await apiResponse.json();
         document.getElementById('api-response').innerText = JSON.stringify(apiData, null, 2);
 
-        // Fetch database data
-        const dbResponse = await fetch('http://localhost:3000/db');
+        // Fetch database endpoint
+        const dbResponse = await fetch(`${BACKEND_URL}/db`);
         if (!dbResponse.ok) throw new Error('Database request failed');
         const dbData = await dbResponse.json();
         document.getElementById('db-response').innerText = JSON.stringify(dbData, null, 2);
@@ -35,9 +45,8 @@
       }
     }
 
-
+    // Appel automatique après 1 seconde pour test rapide
     setTimeout(fetchData, 1000);
   </script>
 </body>
 </html>
-
